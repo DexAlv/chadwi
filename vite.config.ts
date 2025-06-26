@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  base: '/chadwi/',
   plugins: [
     tailwindcss(),
   ],
@@ -12,4 +11,5 @@ export default defineConfig({
       // otras rutas que quieras proxiar
     },
   },
+  base: '/chadwi/'
 })
