@@ -7,12 +7,20 @@ function HomeDOS() {
   const [trackerType, setTrackerType] = useState("KCF");
   const [intervalo, setIntervalo] = useState(30);
   const [umbral, setUmbral] = useState(0.6);
+  const [videos, setVideos] = useState<string[]>([]);
+  const [videoSeleccionado, setVideoSeleccionado] = useState("CAM");
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const tipo = localStorage.getItem("tipo_usuario");
     if (tipo) setTipoUsuario(tipo);
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/listar_videos", { credentials: "include" })
+      .then((res) => res.json())
+      .then(setVideos);
   }, []);
 
   const handleLogin = (tipo: string) => {
@@ -25,8 +33,12 @@ function HomeDOS() {
     setTipoUsuario(null);
   };
 
-  const redirigir = () => {
+  const redirigirReporte = () => {
     navigate("/reporte");
+  };
+
+  const redirigirDetecciones = () => {
+    navigate("/detecciones");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,17 +47,19 @@ function HomeDOS() {
       const res = await fetch("http://localhost:5000/set_config", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           tracker_type: trackerType,
           detection_interval: intervalo,
           umbral: umbral,
+          video_name: videoSeleccionado,
         }),
       });
+      const data = await res.json();
       if (!res.ok) {
-        const data = await res.json();
         alert("Error: " + data.error);
       } else {
-        alert("✅ Configuración enviada con éxito.");
+        alert("✅ Configuración enviada con éxito.\n🎥 Video: " + data.video);
       }
     } catch (error) {
       alert("❌ Error al enviar la configuración.");
@@ -63,6 +77,20 @@ function HomeDOS() {
             Detección automática de residuos
           </h1>
           <div className="flex gap-4">
+            {tipoUsuario === "admin" && (
+              <button
+                onClick={redirigirReporte}
+                className="bg-[#f0f0f0] text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-[#62b6cb] hover:text-white transition"
+              >
+                Generar reporte
+              </button>
+            )}
+            <button
+              onClick={redirigirDetecciones}
+              className="bg-[#f0f0f0] text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-[#62b6cb] hover:text-white transition"
+            >
+              Consultar detecciones
+            </button>
             <button
               onClick={handleLogout}
               className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-xl shadow-md transition"
@@ -87,9 +115,27 @@ function HomeDOS() {
         </section>
 
         {/* Formulario */}
-        <section className="w-full max-w-md bg-gray-900 text-gray-100 rounded-3xl shadow-xl border border-gray-700 p-10 flex flex-col justify-start overflow-auto max-h-[90vh]">
+        <section className="w-full max-w-md bg-gray-900 text-gray-100 rounded-3xl shadow-xl border border-gray-700 p-10 flex flex-col justify-center">
           <h2 className="text-3xl font-bold mb-8 text-center">Configuración</h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <div>
+              <label className="block mb-2 font-semibold text-gray-300">
+                Fuente de video:
+              </label>
+              <select
+                value={videoSeleccionado}
+                onChange={(e) => setVideoSeleccionado(e.target.value)}
+                className="w-full rounded-xl bg-gray-800 border border-gray-700 text-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+              >
+                <option value="CAM">Usar cámara</option>
+                {videos.map((video) => (
+                  <option key={video} value={video}>
+                    {video}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div>
               <label className="block mb-2 font-semibold text-gray-300">
                 Tipo de tracker:

@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function ReportesPanel() {
+  useEffect(() => {
+    const tipo = localStorage.getItem("tipo_usuario");
+    if (tipo !== "admin") {
+      navigate("/");
+    }
+  }, []);
   const [inicio, setFechaInicio] = useState("");
   const [fin, setFechaFin] = useState("");
   const [usuarioId, setUsuarioId] = useState(1); // Ajusta según tu auth
@@ -25,7 +31,7 @@ export default function ReportesPanel() {
 
   const generar = async () => {
     const usuario_id = localStorage.getItem("usuario_id");
-    const fecha_inicio =  inicio + " 00:00:00";
+    const fecha_inicio = inicio + " 00:00:00";
     const fecha_fin = fin + " 23:59:59";
 
     if (!usuario_id) return;

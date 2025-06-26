@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./HomeDOS";
+import Home from "./HomeT";
 import ReportesPanel from "./ReportesPanel";
 import DeteccionesPanel from "./DeteccionesPanel";
 
