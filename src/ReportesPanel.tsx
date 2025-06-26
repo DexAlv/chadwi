@@ -10,9 +10,8 @@ export default function ReportesPanel() {
   }, []);
   const [inicio, setFechaInicio] = useState("");
   const [fin, setFechaFin] = useState("");
-  const [usuarioId, setUsuarioId] = useState(1); // Ajusta según tu auth
   const [reportes, setReportes] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const navigate = useNavigate();
 
   const fetchReportes = async () => {

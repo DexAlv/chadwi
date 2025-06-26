@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import LoginForm from "./LoginForm";
 
 function HomeDOS() {
@@ -7,8 +6,6 @@ function HomeDOS() {
   const [trackerType, setTrackerType] = useState("KCF");
   const [intervalo, setIntervalo] = useState(30);
   const [umbral, setUmbral] = useState(0.6);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const tipo = localStorage.getItem("tipo_usuario");
@@ -23,10 +20,6 @@ function HomeDOS() {
   const handleLogout = () => {
     localStorage.removeItem("tipo_usuario");
     setTipoUsuario(null);
-  };
-
-  const redirigir = () => {
-    navigate("/reporte");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
